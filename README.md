@@ -33,12 +33,12 @@ Ce TP a pour objectif de mettre en place une petite architecture réseau compos�
 
 ---
 
-## 1️⃣ Configuration — Router0
+## Router-TP
 
 ```
 enable
 configure terminal
-hostname Router0
+hostname Router-TP
 
 interface g0/0
  ip address 192.168.1.1 255.255.255.0
@@ -50,46 +50,42 @@ interface g0/1
  no shutdown
  exit
 ```
-
-**Explication simple** : le routeur a une patte dans chaque réseau (G0/0 et G0/2). Comme les deux réseaux sont directement branchés dessus, il n'y a pas besoin de routage statique : le routeur sait déjà comment aller de l'un à l'autre.
+ le routeur a une patte dans chaque réseau (G0/0 et G0/2). Comme les deux réseaux sont directement branchés dessus, il n'y a pas besoin de routage statique : le routeur sait déjà comment aller de l'un à l'autre.
 
 ---
 
-## 2️⃣ Configuration — Switch0
+## Sw-TP 1
 
 ```
 enable
 configure terminal
-hostname Switch0
+hostname Sw-TP 1
+
+interface range fa0/1-2
+ switchport mode access
+ exit
+```
+ Fa0/1 et Fa0/2 sont les ports branchés aux PC (PC0 et PC1). On les met en mode "access" car chaque port ne sert qu'à un seul appareil, pas de VLAN multiple ici.
+
+---
+
+##  Sw-TP 2
+
+```
+enable
+configure terminal
+hostname Sw-TP 2
 
 interface range fa0/1-2
  switchport mode access
  exit
 ```
 
-**Explication simple** : Fa0/1 et Fa0/2 sont les ports branchés aux PC (PC0 et PC1). On les met en mode "access" car chaque port ne sert qu'à un seul appareil, pas de VLAN multiple ici.
-
 ---
 
-## 3️⃣ Configuration — Switch1
+##  Sécurisation
 
-```
-enable
-configure terminal
-hostname Switch1
-
-interface range fa0/1-2
- switchport mode access
- exit
-```
-
-**Explication simple** : même logique que Switch0, mais pour PC2 et PC3.
-
----
-
-## 4️⃣ Sécurisation
-
-### a) Mots de passe et accès (sur Router0, Switch0 et Switch1)
+###  Mots de passe et accès  Router0, Switch0 et Switch1
 
 ```
 enable secret Cisco123!
@@ -106,26 +102,24 @@ line vty 0 4
  transport input ssh
  exit
 ```
+ on protège l'accès à chaque équipement avec un mot de passe, et on chiffre les mots de passe stockés pour qu'ils ne soient pas visibles en clair.
 
-**Explication simple** : on protège l'accès à chaque équipement avec un mot de passe, et on chiffre les mots de passe stockés pour qu'ils ne soient pas visibles en clair.
-
-### b) SSH (sur Router0, Switch0 et Switch1)
+###  SSH  Router0, Switch0 et Switch1
 
 ```
 ip domain-name tp-securite.local
 crypto key generate rsa
 ip ssh version 2
 ```
+ SSH permet de se connecter à distance de façon chiffrée, contrairement à Telnet qui envoie tout en clair (mot de passe compris).
 
-**Explication simple** : SSH permet de se connecter à distance de façon chiffrée, contrairement à Telnet qui envoie tout en clair (mot de passe compris).
-
-### c) Bannière de connexion (sur Router0, Switch0 et Switch1)
+###  Bannière de connexion  Router0, Switch0 et Switch1
 
 ```
 banner motd #Accès réservé - Toute tentative non autorisée sera loggée#
 ```
 
-### d) Port Security (sur Switch0 et Switch1 uniquement)
+###  Port Security (sur Switch0 et Switch1 uniquement)
 
 ```
 interface range fa0/1-2
@@ -135,10 +129,9 @@ interface range fa0/1-2
  switchport port-security violation shutdown
  exit
 ```
+ça empêche qu'un pirate débranche un PC autorisé et branche son propre appareil sur le même port. Si une adresse MAC inconnue apparaît, le port se coupe automatiquement.
 
-**Explication simple** : ça empêche qu'un pirate débranche un PC autorisé et branche son propre appareil sur le même port. Si une adresse MAC inconnue apparaît, le port se coupe automatiquement.
-
-### e) Désactivation des ports inutilisés (sur Switch0 et Switch1)
+###  Désactivation des ports inutilisés  Switch0 et Switch1
 
 ```
 interface range fa0/3-19
@@ -149,11 +142,11 @@ interface range fa0/21-24
  exit
 ```
 
-**Explication simple** : on coupe tous les ports non utilisés pour éviter qu'un intrus branche un appareil dessus. ⚠️ Attention à ne pas couper Fa0/20, il sert au lien entre Switch0 et Switch1.
+ on coupe tous les ports non utilisés pour éviter qu'un intrus branche un appareil dessus.
 
-### f) ACL — Restriction du trafic (sur Router0)
+###  ACL  Restriction du trafic  Router0
 
-**Objectif** : PC2 (192.168.2.10) ne doit pouvoir parler qu'à PC1 (192.168.1.11), et à personne d'autre.
+ PC2 (192.168.2.10) ne doit pouvoir parler qu'à PC1 (192.168.1.11), et à personne d'autre.
 
 ```
 configure terminal
@@ -166,17 +159,15 @@ interface g0/1
  exit
 ```
 
-**Explication simple** :
-- La 1ère ligne autorise PC2 à parler uniquement à PC1.
-- La 2ème ligne bloque tout le reste venant de PC2.
-- La 3ème ligne laisse passer tout le trafic normal des autres PC (non concernés par la restriction).
+- La  ligne 1 autorise PC2 à parler uniquement à PC1.
+- La ligne 2 bloque tout le reste venant de PC2.
+- La ligne 3 laisse passer tout le trafic normal des autres PC (non concernés par la restriction).
 - L'ordre des lignes est très important : elles sont lues de haut en bas.
 
 ---
 
-## 5️⃣ Sauvegarde de la configuration
+## 5️ Sauvegarde de la configuration
 
-Sur **Router0, Switch0 et Switch1** :
 
 ```
 copy run start
@@ -184,7 +175,7 @@ copy run start
 
 ---
 
-## 6️⃣ Vérifications
+##  Vérifications
 
 | Test | Depuis | Résultat attendu |
 |---|---|---|
