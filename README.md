@@ -20,7 +20,7 @@ Ce TP a pour objectif de mettre en place une petite architecture réseau compos�
 | Équipement | Interface | Adresse IP | Masque | Connecté à |
 |---|---|---|---|---|
 | Router0 | G0/0 | 192.168.1.1 | /24 | Switch0 |
-| Router0 | G0/2 | 192.168.2.1 | /24 | Switch1 |
+| Router0 | G0/1 | 192.168.2.1 | /24 | Switch1 |
 | Switch0 | Fa0/1 | — | — | PC0 |
 | Switch0 | Fa0/2 | — | — | PC1 |
 | Switch0 | Fa0/20 | — | — | Switch1 |
@@ -45,7 +45,7 @@ interface g0/0
  no shutdown
  exit
 
-interface g0/2
+interface g0/1
  ip address 192.168.2.1 255.255.255.0
  no shutdown
  exit
@@ -161,7 +161,7 @@ access-list 110 permit ip host 192.168.2.10 host 192.168.1.11
 access-list 110 deny ip host 192.168.2.10 any
 access-list 110 permit ip any any
 
-interface g0/2
+interface g0/1
  ip access-group 110 in
  exit
 ```
