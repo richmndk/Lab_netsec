@@ -4,7 +4,7 @@
 ![Réseau](https://img.shields.io/badge/Réseau-Configuration-blue?style=for-the-badge)
 ![Sécurité](https://img.shields.io/badge/Sécurité-Cybersécurité-red?style=for-the-badge)
 
-# TP Réseau & Sécurité — Interconnexion et Sécurisation avec Cisco Packet Tracer
+# TP Réseau & Sécurité: Interconnexion et Sécurisation avec Cisco Packet Tracer
 
 ##  But du TP
 
