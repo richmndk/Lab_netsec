@@ -209,4 +209,4 @@ Ce TP permet de comprendre les bases essentielles d'une infrastructure réseau s
 
 ---
 
-**Auteur** : Richmond — Analyste Cybersécurité, parcours Réseau & Sécurité & IA
+**Auteur** : Richmond, Network & security Technician 
